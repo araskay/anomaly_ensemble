@@ -70,7 +70,7 @@ class TestEnsemble(unittest.TestCase):
                 'rank_avg': [1.0, 2.5, 2.5]
             }
         )
-        res = ensemble.Ensemble().rank_avg_ensemble(
+        res = ensemble.Ensemble.rank_avg_ensemble(
             df, variables=['x1','x2'], ensemble_score='rank_avg',
             ascending=False
         )
@@ -90,7 +90,7 @@ class TestEnsemble(unittest.TestCase):
                 'rank_avg': [1.0, 2.0, 2.5]
             }
         )
-        res = ensemble.Ensemble().rank_avg_ensemble(
+        res = ensemble.Ensemble.rank_avg_ensemble(
             df, variables=['x1','x2'], ensemble_score='rank_avg',
             ascending=False
         )
@@ -110,7 +110,7 @@ class TestEnsemble(unittest.TestCase):
                 'rank_avg': [1.0, 2.0, 3.0]
             }
         )
-        res = ensemble.Ensemble().rank_avg_ensemble(
+        res = ensemble.Ensemble.rank_avg_ensemble(
             df, variables=['x1','x2'], ensemble_score='rank_avg',
             ascending=[False, True]
         )
@@ -132,7 +132,7 @@ class TestEnsemble(unittest.TestCase):
                 'x2_rank': [1.0,3.0,2.0]
             }
         )
-        res = ensemble.Ensemble().rank_avg_ensemble(
+        res = ensemble.Ensemble.rank_avg_ensemble(
             df, variables=['x1','x2'], ensemble_score='ens',
             ascending=False,
             add_ranks=True
@@ -146,7 +146,7 @@ class TestEnsemble(unittest.TestCase):
                 'x2': [3, 2, 1]
             }
         )
-        res = ensemble.Ensemble().thresholded_avg(
+        res = ensemble.Ensemble.thresholded_avg(
             df, ['x1', 'x2'], ensemble_score='ens'
         )
         expected = [1.5, 1, 1.5]
@@ -160,7 +160,7 @@ class TestEnsemble(unittest.TestCase):
                 'irrelevant': [42, 4.2, 1]
             }
         )
-        res = ensemble.Ensemble().thresholded_avg(
+        res = ensemble.Ensemble.thresholded_avg(
             df, ['x1', 'x2'], ensemble_score='thresholded_avg'
         )
         self.assertTrue(
@@ -175,7 +175,7 @@ class TestEnsemble(unittest.TestCase):
                 'irrelevant': [42, 4.2, 1]
             }
         )
-        res = ensemble.Ensemble().thresholded_avg(
+        res = ensemble.Ensemble.thresholded_avg(
             df, ['x1', 'x2'], ensemble_score='thresholded_avg'
         )
         self.assertTrue(
@@ -189,7 +189,7 @@ class TestEnsemble(unittest.TestCase):
                 'x2': [0, 0, 0]
             }
         )
-        res = ensemble.Ensemble().thresholded_avg(
+        res = ensemble.Ensemble.thresholded_avg(
             df, ['x1', 'x2'], ensemble_score='thresholded_avg'
         )
         expected = [0, 0, 0]
@@ -203,7 +203,7 @@ class TestEnsemble(unittest.TestCase):
             }
         )
         expected = [1, 1, 0.5]
-        res = ensemble.Ensemble().avg_ensemble(
+        res = ensemble.Ensemble.avg_ensemble(
             df, ['x1', 'x2'], ensemble_score='ens'
         )
         self.assertTrue(expected == res['ens'].to_list())
@@ -216,7 +216,7 @@ class TestEnsemble(unittest.TestCase):
             }
         )
         expected = [1, 1, 10]
-        res = ensemble.Ensemble().maxpool_ensemble(
+        res = ensemble.Ensemble.maxpool_ensemble(
             df, ['x1', 'x2'], ensemble_score='ens'
         )
         self.assertTrue(expected == res['ens'].to_list())
@@ -229,7 +229,7 @@ class TestEnsemble(unittest.TestCase):
             }
         )
         expected = [1, 1, 1, 0.9]
-        res = ensemble.Ensemble().threshold_pruned_avg_ensemble(
+        res = ensemble.Ensemble.threshold_pruned_avg_ensemble(
             df, ['x1', 'x2'], ensemble_score='ens', pavg_thresh=0.7
         )
         self.assertTrue(expected == res['ens'].to_list())
@@ -243,7 +243,7 @@ class TestEnsemble(unittest.TestCase):
             }
         )
         expected = [1, 1.5, 2, 1]
-        res = ensemble.Ensemble().top_k_pruned_avg_ensemble(
+        res = ensemble.Ensemble.top_k_pruned_avg_ensemble(
             df, ['x1', 'x2', 'x3'], ensemble_score='ens', pavg_k=2
         )
         self.assertTrue(expected == res['ens'].to_list())
@@ -252,31 +252,31 @@ class TestNormalization(unittest.TestCase):
     def test_minmax_norm(self):
         x = [1,2,3]
         expected = [0, 0.5, 1]
-        res = ensemble.Normalize().minmax_norm(x)
+        res = ensemble.Normalize.minmax_norm(x)
         self.assertTrue(np.array_equal(res, expected))
 
     def test_minmax_norm_constant_input(self):
         x = [42, 42, 42]
         expected = [0, 0, 0]
-        res = ensemble.Normalize().minmax_norm(x)
+        res = ensemble.Normalize.minmax_norm(x)
         self.assertTrue(np.array_equal(res, expected))
 
     def test_thresholded_std_norm(self):
         x = [-1, 0, 1]
         expected = [0, 0, 1/np.std(x)]
-        res = ensemble.Normalize().thresholded_std_norm(x)
+        res = ensemble.Normalize.thresholded_std_norm(x)
         self.assertTrue(np.array_equal(res, expected))
         
     def test_thresholded_std_norm_constant_input(self):
         x = [0, 0, 0]
         expected = [0, 0, 0]
-        res = ensemble.Normalize().thresholded_std_norm(x)
+        res = ensemble.Normalize.thresholded_std_norm(x)
         self.assertTrue(np.array_equal(res, expected))
 
     def test_thresholded_norm(self):
         x = [1, 2, 3, 4]
         expected = [2.5, 2.5, 3, 4]
-        res = ensemble.Normalize().thresholded_norm(x)
+        res = ensemble.Normalize.thresholded_norm(x)
         self.assertTrue(np.array_equal(res, expected))
 
 

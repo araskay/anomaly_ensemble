@@ -6,22 +6,26 @@ class Normalize:
     def __init__(self) -> None:
         pass
 
-    def minmax_norm(self, x):
+    @staticmethod
+    def minmax_norm(x):
         if np.max(x) - np.min(x) > 0:
             return (x-np.min(x))/(np.max(x)-np.min(x))
         else:
             return x-np.min(x)
 
-    def std_norm(self, x):
+    @staticmethod
+    def std_norm(x):
         if np.std(x) > 0:
             return (x-np.mean(x))/np.std(x)
         else:
             return x-np.mean(x)
 
-    def thresholded_std_norm(self, x):
-        return np.maximum(self.std_norm(x), 0)
+    @staticmethod
+    def thresholded_std_norm(x):
+        return np.maximum(Normalize.std_norm(x), 0)
 
-    def thresholded_norm(self, x):
+    @staticmethod
+    def thresholded_norm(x):
         return np.maximum(x, np.mean(x))
 
 class ScoreCombiner:
@@ -48,18 +52,20 @@ class Ensemble:
     def __init__(self) -> None:
         pass
 
+    @staticmethod
     def avg_ensemble(
-        self, df, variables, ensemble_score='avg'
+        df, variables, ensemble_score='avg'
     ):
         df[ensemble_score] = df[variables].apply(np.mean, axis=1)
         return df
 
+    @staticmethod
     def thresholded_avg(
-        self, df, variables, ensemble_score='thresholded_avg'
+        df, variables, ensemble_score='thresholded_avg'
     ):
         d = df.copy()
         d[variables] = d[variables].apply(Normalize().thresholded_norm)
-        res = self.avg_ensemble(
+        res = Ensemble.avg_ensemble(
             d,
             variables=variables,
             ensemble_score=ensemble_score
@@ -67,14 +73,16 @@ class Ensemble:
         df[ensemble_score] = res[ensemble_score]
         return df
 
+    @staticmethod
     def maxpool_ensemble(
-        self, df, variables, ensemble_score='maxpool'
+        df, variables, ensemble_score='maxpool'
     ):
         df[ensemble_score] = df[variables].apply(np.max, axis=1)
         return df
 
+    @staticmethod
     def threshold_pruned_avg_ensemble(
-        self, df, variables, pavg_thresh=None, ensemble_score = 'threshold_pruned_avg'
+        df, variables, pavg_thresh=None, ensemble_score = 'threshold_pruned_avg'
     ):
         if pavg_thresh is None:
             pavg_thresh = 0.7*df[variables].max().max()
@@ -85,8 +93,9 @@ class Ensemble:
         )
         return df
 
+    @staticmethod
     def top_k_pruned_avg_ensemble(
-        self, df, variables, pavg_k=None, ensemble_score = 'top_k_pruned_avg'
+        df, variables, pavg_k=None, ensemble_score = 'top_k_pruned_avg'
     ):
         if pavg_k is None:
             pavg_k = int(len(variables)/2)
@@ -95,8 +104,9 @@ class Ensemble:
         )
         return df
 
+    @staticmethod
     def rank_avg_ensemble(
-        self, df: pd.DataFrame, variables: list,
+        df: pd.DataFrame, variables: list,
         ensemble_score: str = 'rank_avg',
         ascending: Union[bool, list] = False,
         add_ranks: bool = False
@@ -113,7 +123,7 @@ class Ensemble:
             d[var] = d[var].rank(method='min', ascending=ascnd)
             ensembler.add_score(d, key, var)
     
-        scores = self.avg_ensemble(
+        scores = Ensemble.avg_ensemble(
             ensembler.get_scores(), variables=variables,
             ensemble_score=ensemble_score
         )
